@@ -21,7 +21,7 @@ Overall, we've done nothing in this file besides connection our functions to it,
 _Corpus_tokenizer_ for query processing that matches the corpus (index). currently only has a default implementation, we were hoping to add stemming and lemmatization but didn't manage to in time.
 _get_Binary_ - for binary retrival on indices (for the requested title/anchor text retrival).
 _text_title_merge_ - A functions that runs BM25 queries on both the title index and text index, re-sorts the combined results according to retrived BM25 scores and weights.
-We've found that the weights 0.74 for the body and 0.31 for the title works best on our corpus.
+We've found that the weights 0.7 for the body and 0.3 for the title works best on our corpus.
 _get_TFIDF_ - Returns values accoring to TF_IDF calculation, BM25, and cosine similarity. has three PIPE's - 'HW' for the requested search_body implementation ,
  'opt' for a BM25 retrival with optimizied parameters (k1 ,b) over the wikipedia corpus -tested on supplied test queries, and 'cos' which uses cosine similarity on tfidf scores.
 
@@ -31,6 +31,6 @@ _get_OPT_Tfidf_ - retrives a list of docs according to tokens, uses sequencial i
 _get_BM25_ - same, only using BM25 model and default k1 , b parameters of (1.2 , 0.5)
 _get_opt_BM25_ - we found different parameters that gave us improved results (k1 =3, b =0.25)
 _get_opt_BM25_for_joint_ - returns a list of (doc_id , BM25 score) for further sorting and merging.
-_get_OPT_Cosine_ - returns the cosine similarity based on the tf-idf T2KDD MN HAYY!!! score
+_get_OPT_Cosine_ - returns the cosine similarity based on the tf-idf score
 
 **inverted_index_class.py** - class for inverted index object, contains document length,normalized document length, total_terms and posting locs dictionaries. Capble of reading and writing posting locs to and from bins.
