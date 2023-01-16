@@ -1,10 +1,8 @@
 from inverted_index_gcp import *
 import nltk
-from nltk.tokenize import word_tokenize  # use is commented
+from nltk.tokenize import word_tokenize
 from IR import *
 import re
-# should be activated only one time !
-# nltk.download('stopwords')
 
 from nltk.corpus import stopwords
 
@@ -21,7 +19,7 @@ all_stopwords = english_stopwords.union(corpus_stopwords)
 
 def Corpus_Tokenizer(text, method='norm'):
     """"
-    During developing - had a 'stem' and 'lemm' methods. # CHANGE
+    we wanted to add stemming and lemmatization hence the method='norm'
     """
 
     RE_WORD = re.compile(r"""[\#\@\w](['\-]?\w){2,24}""", re.UNICODE)
@@ -35,6 +33,8 @@ def get_binary(query, inv_idx, bucket_name, folder_name):
     Function to binary search in indices (for either anchor or title retrieval)
     :param query:  query to tokenize and search
     :param inv_idx: inverted index to binary search in
+    :param bucket_name : str , name of the bucket
+    :param folder_name : str, name of the folder that contains the indices
     :return: list of relevant documents  , sorted by query tokens matches
     """
     # tokens = word_tokenize(query.lower())
@@ -56,7 +56,7 @@ def get_binary(query, inv_idx, bucket_name, folder_name):
 def text_title_Merge(query, text_idx, text_n_docs, text_avg_doc, title_idx, title_n_docs, title_avg_doc, N=200):
     """
     receives a query and runs it on text and title indices.
-    returns a merged list of docs - based on TFIDF score of each index and pre-determined weights.
+    returns a merged list of docs - based on BM25 score of each index and pre-determined weights.
     :param query: string, query to tokenize and search.
     :param text_idx : inverted index of text.
     :param text_n_docs : int, number of docs in text
@@ -88,14 +88,16 @@ def text_title_Merge(query, text_idx, text_n_docs, text_avg_doc, title_idx, titl
     return query_result
 
 
-def get_TFIDF(q_text, index, corpus_docs, avg_dl, bucket_name, folder_name, N=100, PIPE='HW'):
+def get_IR(q_text, index, corpus_docs, avg_dl, bucket_name, folder_name, N=100, PIPE='HW'):
     """
-    Function that retrieves top N files matching each query according to TFIDF and cosine similarity.
+    Function that retrieves top N files matching each query according to TFIDF, BM25, and cosine similarity.
     :param q_text: free text of query
     :param index: inverted index to search in
     :param N: top number of documents to retrieve
     :param corpus_docs : int , optimization - number of docs in corpus
     :param avg_dl : float, optimization - average document size in corpus
+    :param bucket_name : str , name of the bucket
+    :param folder_name : str, name of the folder that contains the indices
     :param PIPE: differentiate between naive (homework pipe and optimized)
     :return: list of docs id, sorted by rank
     """
@@ -103,15 +105,13 @@ def get_TFIDF(q_text, index, corpus_docs, avg_dl, bucket_name, folder_name, N=10
     q_tokens = list(set(Corpus_Tokenizer(q_text)))
 
     # retrieve docs and score
-
     if PIPE == 'HW':
-        # HW expects queries as dictionary of {id  : tokens }
-        # res = pipe1.get_topN_score_for_queries({1: q_tokens}, index, N)[1]
+        # using TF-IDF scores
         ret = get_OPT_Tfidf(q_tokens, index, bucket_name, folder_name, corpus_docs, N)
         return ret
 
     if PIPE == 'opt':
-        # using optimized tfIDF
+        # using optimized BM25
         ret = get_opt_BM25(q_tokens, index, bucket_name, folder_name, corpus_docs, avg_dl, N)
         return ret
 
@@ -119,6 +119,3 @@ def get_TFIDF(q_text, index, corpus_docs, avg_dl, bucket_name, folder_name, N=10
         # using cosine similarity
         ret = get_OPT_Cosine(q_tokens, index, bucket_name, folder_name, N=100)
         return ret
-
-
-
