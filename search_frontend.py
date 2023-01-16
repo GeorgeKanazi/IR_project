@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from inverted_index_gcp import *
-import retrev as ret  # CHANGE NAME
+import retrev as ret
 from IR import *
 import numpy as np
 import nltk
@@ -32,7 +32,7 @@ storage_client = storage.Client()
 bucket = storage_client.bucket(bucket_name)
 blob = bucket.blob(file_path)
 contents = blob.download_as_bytes()
-title_idx  = pickle.loads(contents)
+title_idx = pickle.loads(contents)
 
 
 file_path = "postingText/text_index.pkl"
@@ -54,7 +54,7 @@ storage_client = storage.Client()
 bucket = storage_client.bucket(bucket_name)
 blob = bucket.blob(file_path)
 contents = blob.download_as_bytes()
-title_dict  = pickle.loads(contents)
+title_dict = pickle.loads(contents)
 
 
 # # reading the pagerank dictionary
@@ -63,7 +63,7 @@ storage_client = storage.Client()
 bucket = storage_client.bucket(bucket_name)
 blob = bucket.blob(file_path)
 contents = blob.download_as_bytes()
-pr_dict  = pickle.loads(contents)
+pr_dict = pickle.loads(contents)
 
 
 # # reading the pageviews dictionary
@@ -72,7 +72,7 @@ storage_client = storage.Client()
 bucket = storage_client.bucket(bucket_name)
 blob = bucket.blob(file_path)
 contents = blob.download_as_bytes()
-pv_dict  = pickle.loads(contents)
+pv_dict = pickle.loads(contents)
 
 
 # calculations :
@@ -125,11 +125,6 @@ def search():
     return jsonify(res)
 
 
-    
-
-    
-
-
 @app.route("/search_body")
 def search_body():
     """ Returns up to a 100 search results for the query using TFIDF AND COSINE
@@ -152,7 +147,7 @@ def search_body():
     if len(query) == 0:
         return jsonify(res)
     # BEGIN SOLUTION
-    res = [(id, title_dict[id]) for id in ret.get_TFIDF(query, text_idx, text_docs, avg_text_dl, bucket_name, folder_name, N=100, PIPE='opt')]
+    res = [(id, title_dict[id]) for id in ret.get_IR(query, text_idx, text_docs, avg_text_dl, bucket_name, folder_name, N=100, PIPE='opt')]
     # END SOLUTION
     return jsonify(res)
 
