@@ -2,7 +2,7 @@
 Information Retrieval Project 2023
 
 ## Wikipedia Search Engine
-Final project in Information retrival Course 372.1.4406 at Ben-Gurion University, submitted by [myself](https://github.com/GeorgeKanazi) and Amar.
+Final project in Information retrival Course 372.1.4406 at Ben-Gurion University, submitted by [myself](https://github.com/GeorgeKanazi) and [Amar](https://github.com/AmarMnaa).
 
 ## Introduction
 The engine is BM25 based. It uses various inverted indices on wikipedia (body text, title, and anchor text) as well as page rank, page view and page title dictionaries.
